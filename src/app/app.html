@@ -9,7 +9,10 @@
           <h2 class="fw-bold mb-0 text-dark">
             Adjust <span class="text-primary">Post Body</span> Inspector
           </h2>
-          <small class="text-muted text-uppercase fw-bold ls-1">Marketing Tech Diagnostic Tool</small>
+          <div class="d-flex align-items-center gap-2">
+            <small class="text-muted text-uppercase fw-bold ls-1">Marketing Tech Diagnostic Tool</small>
+            <span class="badge bg-secondary-subtle text-secondary border-0 x-small">v{{version()}}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -38,15 +41,15 @@
           Raw Query String
         </div>
         <div class="card-body pt-0">
-          <textarea class="form-control font-monospace mb-3 bg-body-tertiary border-0 shadow-inner"
+          <textarea [disabled]="!hasDictionary()" class="form-control font-monospace mb-3 bg-body-tertiary border-0 shadow-inner"
             style="height: 60vh; font-size: 0.85rem; resize: none;" [(ngModel)]="rawInput"
-            placeholder="Paste your app_token=... string here"></textarea>
+            [placeholder]="hasDictionary() ? 'Paste your app_token=... string here' : 'Upload Event List on dictionary to enable processing'"></textarea>
 
           <div class="d-flex gap-2">
             <button class="btn btn-outline-danger px-3" (click)="clearAll()" title="Reset All Fields">
               <i class="bi bi-arrow-counterclockwise"></i>
             </button>
-            <button class="btn btn-primary flex-grow-1 py-3 fw-bold shadow-sm" (click)="process()" [disabled]="!rawInput() || rawInput().trim().length === 0">
+            <button class="btn btn-primary flex-grow-1 py-3 fw-bold shadow-sm" (click)="process()" [disabled]="!rawInput() || rawInput().trim().length === 0 || !hasDictionary()">
               Process & Validate <i class="bi bi-magic ms-1"></i>
             </button>
           </div>
@@ -59,56 +62,78 @@
         <div class="card-header bg-transparent d-flex justify-content-between align-items-center py-3 border-0">
           <span class="fw-bold text-uppercase small opacity-75">Inspector Results</span>
         </div>
-
-        @if(!jsonOutput() && syntaxErrors().length === 0) {
-          <div class="text-center py-5 my-auto opacity-25">
-            <i class="bi bi-braces-asterisk display-1 mb-3 d-block"></i>
-            <p class="fw-medium">Paste a string to begin parsing</p>
+    
+        @if (!hasDictionary()) {
+        <div class="p-4 text-center my-auto animate__animated animate__headShake">
+          <div
+            class="bg-danger bg-opacity-10 text-danger rounded-circle d-inline-flex align-items-center justify-content-center mb-4"
+            style="width: 80px; height: 80px;">
+            <i class="bi bi-book-fill fs-1"></i>
           </div>
+          <h4 class="fw-bold text-danger">Dictionary Required</h4>
+          <p class="text-muted mx-auto mb-4" style="max-width: 300px;">
+            Please upload your event mapping CSV to enable validation.
+          </p>
+          <button class="btn btn-danger px-4 fw-bold shadow-sm" (click)="openDictionary()">
+            <i class="bi bi-upload me-2"></i> Open Dictionary
+          </button>
+        </div>
         }
-        @else { 
-          <div class="p-3 animate__animated animate__fadeIn">
-          
-            <div class="card mb-3 border-0 bg-primary bg-gradient text-white shadow-sm overflow-hidden">
-              <div class="card-body d-flex justify-content-between align-items-center py-3 position-relative" style="z-index: 1;">
-                <div>
-                  <small class="text-uppercase opacity-75 fw-bold x-small d-block mb-1">Detected Event</small>
-                  <h5 class="mb-0 fw-bold">
-                    {{ jsonOutput()?.callback_params?.event_name || 'N/A' }}
-                    @if (jsonOutput()?.revenue) {
-                    <span class="badge bg-warning text-dark ms-2 small">REVENUE</span>
-                    }
-                  </h5>
-                </div>
-                <div class="text-end" style="z-index: 2;">
-                  <small class="text-uppercase opacity-75 fw-bold x-small d-block mb-1">Event Token</small>
-                  <code class="text-white h5 mb-0">{{ jsonOutput()?.event_token || 'N/A' }}</code>
-                  <i class="bi bi-activity position-absolute end-0 bottom-0 opacity-25 mb-n3 me-n2" style="font-size: 5rem;"></i>
-                </div>
+    
+        @else if ((!jsonOutput() && syntaxErrors().length === 0) || rawInput().trim().length === 0) {
+        <div class="text-center py-5 my-auto opacity-25 animate__animated animate__fadeIn">
+          <i class="bi bi-braces-asterisk display-1 mb-3 d-block"></i>
+          <p class="fw-medium">Paste a string to begin parsing</p>
+        </div>
+        }
+    
+        @else if (syntaxErrors().length > 0) {
+        <div class="p-4 text-center my-auto text-warning">
+          <i class="bi bi-exclamation-octagon display-4 mb-3"></i>
+          <p>{{ syntaxErrors()[0] }}</p>
+        </div>
+        }
+    
+        @else {
+        <div class="p-3 animate__animated animate__fadeIn">
+          <div class="card mb-3 border-0 bg-primary bg-gradient text-white shadow-sm overflow-hidden">
+            <div class="card-body d-flex justify-content-between align-items-center py-3 position-relative"
+              style="z-index: 1;">
+              <div>
+                <small class="text-uppercase opacity-75 fw-bold x-small d-block mb-1">Detected Event</small>
+                <h5 class="mb-0 fw-bold">
+                  {{ jsonOutput()?.callback_params?.event_name || 'N/A' }}
+                </h5>
               </div>
-            </div>
-          
-            @if (validationResult(); as result) {
-            <div [class]="'alert alert-' + result.type + ' border-0 shadow-sm d-flex align-items-start'">
-              <i
-                [class]="'bi ' + (result.isValid ? 'bi-shield-fill-check text-success' : 'bi-shield-fill-exclamation text-danger') + ' fs-4 me-3'"></i>
-              <div class="small">
-                <strong class="d-block mb-1 text-uppercase">{{ result.isValid ? 'S2S Compliance Passed' : 'Compliance Failed'
-                  }}</strong>
-                {{ result.message }}
+    
+              <div class="text-end" style="z-index: 2;">
+                <small class="text-uppercase opacity-75 fw-bold x-small d-block mb-1">Event Token</small>
+                <code class="text-white h5 mb-0">{{ jsonOutput()?.event_token || 'N/A' }}</code>
+                <i class="bi bi-activity position-absolute end-0 bottom-0 opacity-25 mb-n3 me-n2" style="font-size: 5rem;"></i>
               </div>
-            </div>
-            }
-          
-            <div class="rounded-3 bg-body-tertiary border overflow-hidden mt-3">
-              <pre class="m-0 p-3 font-monospace small custom-scrollbar"
-                style="max-height: 45vh; overflow-y: auto;">{{ jsonOutput() | json }}</pre>
             </div>
           </div>
+    
+          @if (validationResult(); as result) {
+          <div [class]="'alert alert-' + result.type + ' border-0 shadow-sm d-flex align-items-start'">
+            <i
+              [class]="'bi ' + (result.isValid ? 'bi-shield-fill-check text-success' : 'bi-shield-fill-exclamation text-danger') + ' fs-4 me-3'"></i>
+            <div class="small">
+              <strong class="d-block mb-1 text-uppercase">{{ result.isValid ? 'S2S Compliance Passed' : 'Compliance Failed'
+                }}</strong>
+              {{ result.message }}
+            </div>
+          </div>
+          }
+    
+          <div class="rounded-3 bg-body-tertiary border overflow-hidden mt-3">
+            <pre class="m-0 p-3 font-monospace small custom-scrollbar"
+              style="max-height: 45vh; overflow-y: auto;">{{ jsonOutput() | json }}</pre>
+          </div>
+        </div>
         }
       </div>
     </div>
-
   </div>
 
   <div class="my-5">
