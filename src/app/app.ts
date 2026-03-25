@@ -31,7 +31,7 @@ export class App {
   validationResult = signal<ValidationResult | null>(null);
 
   hasDictionary = computed(() => this.eventService.eventList().length > 0);
-  version = signal('1.2.0');
+  version = signal('1.1.0');
 
   constructor() {
     this.titleService.setTitle("Daam - Adjust Query Validator");

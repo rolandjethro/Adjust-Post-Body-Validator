@@ -4,6 +4,10 @@ A specialized **Marketing Tech Diagnostic Tool** designed to validate and inspec
 
 ---
 
+## 🖼 Visual Preview
+
+![Adjust Post Body Inspector Interface](./public/assets/images/preview.png)
+
 ## 🗺 Navigation
 
 The application is structured into three primary functional areas:
