@@ -1,59 +1,90 @@
-# QueryToJson
+# Adjust Post Body Inspector (v1.1.0)
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.4.
+A specialized **Marketing Tech Diagnostic Tool** designed to validate and inspect Adjust S2S (Server-to-Server) post bodies. This tool ensures that your event data meets Adjust's strict compliance standards before you send it to their production environment.
 
-## Development server
+---
 
-To start a local development server, run:
+## 🗺 Navigation
 
-```bash
-ng serve
-```
+The application is structured into three primary functional areas:
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+### 1. Input Panel (Left)
 
-## Code scaffolding
+- **Textarea**: Paste your raw Adjust query string here.
+- **Process & Validate**: Triggers the parsing and compliance check logic.
+- **Reset (Icon)**: Clears all current inputs and results to start fresh.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+### 2. Inspector Results (Right)
 
-```bash
-ng generate component component-name
-```
+- **Dictionary Required State**: A safety screen shown when no event mappings are loaded.
+- **Empty State**: Prompting the user to paste a string once the dictionary is ready.
+- **Error/Warning View**: Displays syntax errors or "Incomplete JSON" alerts if the string is truncated.
+- **Results View**: The main dashboard showing the Event Token, Mapping Status, Compliance Alert, and the formatted JSON tree.
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+### 3. Global Tools
 
-```bash
-ng generate --help
-```
+- **Navbar**: Access the **Event Dictionary** modal and the **Theme Toggle** (Light/Dark mode).
+- **History Section**: Found at the bottom of the page to track all validated events in the current session.
 
-## Building
+---
 
-To build the project run:
+## 🛠 Tools & Technologies Used
 
-```bash
-ng build
-```
+This application is built with a modern web stack for high performance and real-time reactivity:
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+- **Angular (v17+)**: Core framework utilizing **Signals** for state management.
+  - **Computed Signals**: Used for real-time tracking of the dictionary status.
+  - **Effects**: Automatically clears the workspace when the dictionary list is modified.
+- **Bootstrap 5**: Responsive layout and UI components (cards, badges, alerts).
+- **Bootstrap Icons**: Intuitive visual status indicators.
+- **NgbModal**: Powers the CSV upload and dictionary management interface.
+- **Animate.css**: Smooth transitions for error states and result displays.
+- **TypeScript**: Ensures strict type safety for validation logic.
 
-## Running unit tests
+---
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+## 🚀 Key Features
 
-```bash
-ng test
-```
+- **Real-time Dictionary Validation**: Instantly checks if an `event_token` exists in your uploaded CSV.
+- **Smart Platform Detection**: Identifies **Android** or **iOS** based on the User Agent string.
+- **Compliance Guardrails**:
+  - **Android**: Checks for `gps_adid` and flags illegal iOS IDs (`idfa`/`idfv`).
+  - **iOS**: Ensures `idfv` is present.
+  - **Revenue**: Enforces root-level `revenue` and `currency` for purchase-intent events.
+- **Truncation Detection**: Specifically identifies incomplete strings (e.g., ending in `%7`) that break JSON structure.
+- **ADID Quick-Copy**: A one-click button to copy the Adjust Device ID for troubleshooting.
 
-## Running end-to-end tests
+---
 
-For end-to-end (e2e) testing, run:
+## 📖 How to Use
 
-```bash
-ng e2e
-```
+### 1. Set Up Your Dictionary
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+The app needs a reference list to validate tokens.
 
-## Additional Resources
+1.  Click **"Dictionary"** in the top bar.
+2.  Upload your event mapping CSV file.
+3.  The "Inspector Results" will now unlock.
+    _Note: If you update or clear this list, the app will automatically empty your textarea to prevent data mismatch._
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+### 2. Paste & Process
+
+1.  Copy your raw Adjust post body string.
+2.  Paste it into the **Raw Query String** box.
+3.  Click **Process & Validate**.
+
+### 3. Review Results
+
+1.  **Check the Token**: Look at the header. A **Green "Mapped" badge** means the token is correct per your dictionary.
+2.  **Read the Compliance Alert**:
+    - ✅ **Success (Green)**: The payload is ready for Adjust S2S.
+    - ❌ **Failed (Red)**: Read the specific error message (e.g., "Missing gps_adid").
+3.  **Inspect JSON**: Use the code view at the bottom to see exactly how Adjust sees your data.
+
+---
+
+## ⚠️ Common Validation Alerts
+
+- **Dictionary Error**: The token provided is not in your uploaded CSV.
+- **Environment Error**: The string contains an invalid environment (expected `production` or `staging`).
+- **Incomplete JSON**: The string was likely cut off during copy-pasting (truncated).
