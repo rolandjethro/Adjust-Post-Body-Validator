@@ -1,0 +1,51 @@
+<div class="mt-5 pt-4 border-top">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h6 class="fw-bold mb-0 text-secondary">
+            <i class="bi bi-layers-half me-2"></i>Recent Results History
+        </h6>
+        @if (history() && history().length > 0) {
+        <button type="button" class="btn btn-danger btn-sm px-3 shadow-sm d-flex align-items-center fw-bold"
+            style="z-index: 10; min-width: 120px;" (click)="historyService.clearHistory()">
+            <i class="bi bi-trash3-fill me-2"></i>
+            Clear History
+        </button>
+        }
+    </div>
+
+    <div class="vstack gap-3">
+        @for (entry of history(); track entry.id) {
+        <div class="card border-secondary-subtle shadow-sm animate__animated animate__fadeInUp">
+            <div class="card-header bg-body-tertiary d-flex justify-content-between align-items-center py-2">
+                <div class="d-flex align-items-center">
+                    <span [class]="'badge me-2 bg-' + entry.status.type">
+                        {{ entry.status.isValid ? 'MATCHED' : 'MISMATCH' }}
+                    </span>
+                    <small class="fw-bold">{{ entry.eventName }}</small>
+                    <small class="text-muted ms-2 border-start ps-2">{{ entry.timestamp | date:'shortTime' }}</small>
+                </div>
+                <button class="btn btn-sm border-0 transition-all" [class.text-success]="copiedId() === entry.id"
+                    [class.text-primary]="copiedId() !== entry.id" (click)="copyToClipboard(entry)" title="Copy JSON">
+                
+                    @if (copiedId() === entry.id) {
+                    <i class="bi bi-check-lg animate__animated animate__bounceIn"></i>
+                    <small class="ms-1 fw-bold">Copied!</small>
+                    } @else {
+                    <i class="bi bi-clipboard"></i>
+                    }
+                </button>
+            </div>
+
+            <div class="card-body p-0" [class.bg-danger-subtle]="!entry.status.isValid">
+                <pre class="m-0 p-3 x-small overflow-auto" [style.color]="entry.status.isValid ? '#2ecc71' : '#e74c3c'"
+                    style="max-height: 150px;">
+                    <code>{{ entry.parsedData | json }}</code>
+                </pre>
+            </div>
+        </div>
+        } @empty {
+        <div class="text-center py-5 bg-body-tertiary rounded border border-dashed">
+            <p class="text-muted mb-0">No history available yet. Process a string to see it here.</p>
+        </div>
+        }
+    </div>
+</div>

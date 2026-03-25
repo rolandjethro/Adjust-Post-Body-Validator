@@ -1,0 +1,103 @@
+/* 1. LOAD SASS COLOR MODULE */
+@use "sass:color";
+
+/* 2. DEFINE BRAND VARIABLES */
+$primary: #006fa2;
+$secondary: #12a19a;
+
+/* 3. IMPORT BOOTSTRAP FUNCTIONS & VARIABLES */
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/maps';
+@import 'bootstrap/scss/mixins';
+
+/* 4. INJECT CUSTOM COLORS INTO BOOTSTRAP MAPS */
+$theme-colors: (
+    "primary": $primary,
+    "secondary": $secondary
+);
+
+/* 5. IMPORT THE REST OF BOOTSTRAP */
+@import 'bootstrap/scss/bootstrap';
+
+/* 6. DEFINE :ROOT FOR RUNTIME USE */
+:root {
+    --bs-primary: #{$primary};
+    --bs-secondary: #{$secondary};
+    --bs-link-color: #{$primary};
+}
+
+/* --- UI OVERRIDES --- */
+
+@import "https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css";
+
+.bg-primary {
+    background-color: $primary !important;
+}
+
+.text-primary {
+    color: $primary !important;
+}
+
+/* Custom Button States with MODERN SASS COLOR ADJUST */
+.btn-primary {
+    background-color: $primary;
+    border-color: $primary;
+
+    &:hover {
+        /* Replaced darken() with the modern color.adjust() */
+        background-color: color.adjust($primary, $lightness: -10%);
+        border-color: color.adjust($primary, $lightness: -10%);
+    }
+
+    &:disabled {
+        cursor: not-allowed;
+        filter: grayscale(1);
+        opacity: 0.5;
+        pointer-events: none;
+    }
+}
+
+/* Dark Mode Polish */
+[data-bs-theme="dark"] .bi {
+    filter: brightness(1.2) contrast(1.1);
+}
+
+
+[data-bs-theme="dark"] {
+    /* 1. Lighten the Primary Blue for better contrast on dark backgrounds */
+    $primary-light: color.adjust($primary, $lightness: 15%);
+
+    .text-primary {
+        color: $primary-light !important;
+    }
+
+    /* 2. Ensure the Adjust/Inspector text (which is .text-dark) flips to light */
+    .text-dark {
+        color: #f8f9fa !important;
+        /* Forces it to an off-white */
+    }
+
+    /* 3. Optional: Add a subtle glow to the brand icon to make it pop */
+    .bg-primary.bg-gradient {
+        box-shadow: 0 0 15px rgba(0, 111, 162, 0.3);
+        background: linear-gradient(45deg, $primary, $secondary) !important;
+    }
+
+    /* 4. Fix for the Navbar brand text if it's still too dark */
+    .navbar-brand h2 {
+        color: #ffffff !important;
+    }
+}
+
+.custom-modal-backdrop {
+    background-color: rgba(0, 0, 0, 0.4) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+/* Makes the error message string break nicely into lines */
+.alert small {
+    display: block;
+    white-space: pre-wrap;
+}
