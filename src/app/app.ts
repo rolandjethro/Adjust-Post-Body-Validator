@@ -1,5 +1,5 @@
 import { CommonModule,  JsonPipe } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterOutlet } from '@angular/router';
 import { EventMappingService } from './shared/services/event-mapping.service';
@@ -31,10 +31,20 @@ export class App {
   validationResult = signal<ValidationResult | null>(null);
 
   hasDictionary = computed(() => this.eventService.eventList().length > 0);
-  version = signal('1.1.0');
+  version = signal('1.2.0');
 
   constructor() {
     this.titleService.setTitle("Daam - Adjust Query Validator");
+
+    // NEW: Real-time listener to clear textarea on dictionary changes
+    effect(() => {
+      // Accessing the signal inside an effect creates the dependency
+      const list = this.eventService.eventList();
+      
+      // Whenever the list changes, reset the UI state
+      this.clearAll();
+      console.log("Dictionary updated: Workspace cleared.");
+    }, { allowSignalWrites: true });
   }
 
 process() {
