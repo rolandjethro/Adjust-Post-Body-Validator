@@ -140,25 +140,33 @@ process() {
   }
 }
   
-formatValue(val: string): any {
-  if (!val) return val;
+formatValue(val: any): any {
+  // If it's already an object/array (not a string), process its children
+  if (val !== null && typeof val === 'object') {
+    Object.keys(val).forEach(key => {
+      val[key] = this.formatValue(val[key]);
+    });
+    return val;
+  }
 
-  // Only attempt JSON parsing if it looks like an object or array
-  if ((val.startsWith('{') && val.endsWith('}')) || (val.startsWith('[') && val.endsWith(']'))) {
+  // If it's not a string, we can't parse it further
+  if (typeof val !== 'string' || !val) return val;
+
+  const trimmed = val.trim();
+
+  // Check if it looks like a JSON object or array
+  if ((trimmed.startsWith('{') && trimmed.endsWith('}')) || (trimmed.startsWith('[') && trimmed.endsWith(']'))) {
     try {
-      return JSON.parse(val);
+      const parsed = JSON.parse(trimmed);
+      // RECURSION: Check if the parsed content contains more stringified JSON
+      return this.formatValue(parsed);
     } catch (e) {
-      // If it looks like JSON but fails, check if it's actually truncated
-      // (e.g., ends in a partial escape code like %7 or a trailing comma)
-      const isLikelyTruncated = val.endsWith('%') || /%[0-9A-F]$/i.test(val) || val.endsWith(',');
-      
+      // Logic to catch actual truncation
+      const isLikelyTruncated = trimmed.endsWith('%') || /%[0-9A-F]$/i.test(trimmed) || trimmed.endsWith(',');
       if (isLikelyTruncated) {
         throw new Error("Incomplete or invalid JSON structure (likely truncated).");
       }
-      
-      // If it's not truncated, it's just a string that happens to have brackets.
-      // Return the raw string and don't throw an error.
-      return val;
+      return val; // It's just a string with brackets
     }
   }
   return val;
