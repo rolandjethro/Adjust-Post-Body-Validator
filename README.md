@@ -6,6 +6,10 @@ A specialized **Marketing Tech Diagnostic Tool** designed to validate and inspec
 
 ## 🖼 Visual Preview
 
+## 🔗 Live Deployment
+
+**Access the live tool here:** [https://daam.com.sa/adjust-postbody-inspector/](https://daam.com.sa/adjust-postbody-inspector/)
+
 ![Adjust Post Body Inspector Interface](./public/assets/images/preview.png)
 
 ## 🗺 Navigation

@@ -1,0 +1,15 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  # This tells the server we are working in the adjust-postbody-calculator folder
+  RewriteBase /adjust-postbody-calculator /
+  
+  # If the file exists, serve it (images, scripts, etc.)
+  RewriteRule ^index\.html$ - [L]
+  
+  # If the requested URL is NOT a real file or folder...
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  
+  # ...redirect everything else to Angular's index.html
+  RewriteRule . /adjust-postbody-calculator/index.html [L]
+</IfModule>

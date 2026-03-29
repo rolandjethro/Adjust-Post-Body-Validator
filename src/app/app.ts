@@ -36,14 +36,9 @@ export class App {
   constructor() {
     this.titleService.setTitle("Daam - Adjust Query Validator");
 
-    // NEW: Real-time listener to clear textarea on dictionary changes
     effect(() => {
-      // Accessing the signal inside an effect creates the dependency
       const list = this.eventService.eventList();
-      
-      // Whenever the list changes, reset the UI state
       this.clearAll();
-      console.log("Dictionary updated: Workspace cleared.");
     }, { allowSignalWrites: true });
   }
 
@@ -51,20 +46,16 @@ process() {
   const raw = this.rawInput().trim();
   const input = raw.replace(/["']\\?$/g, '').replace(/^["']/g, '');
   
-  // Reset all states
   this.jsonOutput.set(null);
   this.syntaxErrors.set([]);
   this.validationResult.set(null);
 
   if (!input) return;
-
-  // --- CRITICAL: DICTIONARY CHECK ---
-  // If the event list is empty, show error and STOP
   if (this.eventService.eventList().length === 0) {
     this.syntaxErrors.set([
       "Dictionary Error: No event mappings found. Please upload a CSV file in the Dictionary modal before processing."
     ]);
-    return; // Stop execution here
+    return; 
   }
 
   if (!this.hasDictionary()) {
@@ -77,8 +68,6 @@ process() {
   try {
     const params = new URLSearchParams(input);
     const result: any = {};
-    // params.forEach((val, key) => { result[key] = this.formatValue(val); });
-    // We catch formatting errors here
       let formatError = null;
       params.forEach((val, key) => { 
         try {
@@ -151,29 +140,29 @@ process() {
   }
 }
   
-  private formatValue(val: string): any {
-    let decoded = val;
-    try { decoded = decodeURIComponent(val); } catch { }
+formatValue(val: string): any {
+  if (!val) return val;
 
-    if (!decoded.startsWith('{') && !decoded.startsWith('[')) {
-      return decoded;
-    }
-
+  // Only attempt JSON parsing if it looks like an object or array
+  if ((val.startsWith('{') && val.endsWith('}')) || (val.startsWith('[') && val.endsWith(']'))) {
     try {
-      const parsed = JSON.parse(decoded);
-      if (typeof parsed === 'object' && parsed !== null) {
-        Object.keys(parsed).forEach(key => {
-          if (typeof parsed[key] === 'string' && (parsed[key].startsWith('{') || parsed[key].startsWith('['))) {
-            parsed[key] = this.formatValue(parsed[key]);
-          }
-        });
-      }
-      return parsed;
+      return JSON.parse(val);
     } catch (e) {
-      // Throw error so process() can catch the truncation
-      throw new Error("Incomplete or invalid JSON structure (likely truncated).");
+      // If it looks like JSON but fails, check if it's actually truncated
+      // (e.g., ends in a partial escape code like %7 or a trailing comma)
+      const isLikelyTruncated = val.endsWith('%') || /%[0-9A-F]$/i.test(val) || val.endsWith(',');
+      
+      if (isLikelyTruncated) {
+        throw new Error("Incomplete or invalid JSON structure (likely truncated).");
+      }
+      
+      // If it's not truncated, it's just a string that happens to have brackets.
+      // Return the raw string and don't throw an error.
+      return val;
     }
   }
+  return val;
+}
 
 
   clearAll() {
