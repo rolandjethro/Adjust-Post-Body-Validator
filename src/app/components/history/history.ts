@@ -12,6 +12,11 @@ export class History {
   historyService = inject(HistoryService);
   history = this.historyService.history;
 
+  getErrorCount(entry: any): number {
+    if (!entry.status || !entry.status.alerts) return 0;
+    return entry.status.alerts.filter((a: any) => a.type === 'danger').length;
+  }
+
   async copyToClipboard(entry: any) {
     try {
       const text = JSON.stringify(entry.parsedData, null, 2);
@@ -21,7 +26,16 @@ export class History {
       
     } catch (err) {
       console.error('Failed to copy: ', err);
-      alert('Failed to copy to clipboard.');
+    }
+  }
+
+  async copyRaw(entry: any) {
+    try {
+      await navigator.clipboard.writeText(entry.rawInput);
+      this.copiedId.set(entry.id + '_raw');
+      setTimeout(() => this.copiedId.set(null), 2000);
+    } catch (err) {
+      console.error('Failed to copy raw: ', err);
     }
   }
 }

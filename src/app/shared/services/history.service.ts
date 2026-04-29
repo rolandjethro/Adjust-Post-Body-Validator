@@ -8,6 +8,7 @@ export interface HistoryEntry {
   eventToken: string;
   status: any;      
   parsedData: any;   
+  rawInput: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -27,14 +28,15 @@ export class HistoryService {
   /**
    * Records a new validation event into the history array
    */
-  addEntry(eventName: string, eventToken: string, status: any, parsedData: any) {
+  addEntry(eventName: string, eventToken: string, status: any, parsedData: any, rawInput: string) {
     const newEntry: HistoryEntry = {
       id: crypto.randomUUID(),
       timestamp: new Date(),
       eventName: eventName || 'Unknown Event',
       eventToken: eventToken || 'N/A',
       status: { ...status }, // Clone the validation status
-      parsedData: JSON.parse(JSON.stringify(parsedData)) // Deep clone the JSON result
+      parsedData: JSON.parse(JSON.stringify(parsedData)), // Deep clone the JSON result
+      rawInput: rawInput
     };
 
     // Add to start of array, keep only last 15 items

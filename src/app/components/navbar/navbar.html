@@ -1,0 +1,50 @@
+<nav class="navbar border-bottom mb-4 px-3 sticky-top bg-body shadow-sm">
+  <div class="container-fluid flex-column flex-md-row align-items-stretch align-items-md-center gap-3">
+    <!-- Brand & Logo Section -->
+    <div class="d-flex align-items-center justify-content-between">
+      <div class="d-flex align-items-center">
+        <div class="me-2 me-sm-3">
+          <a href="https://daam.com.sa/" target="_blank">
+            <img src="assets/images/favicon.png" alt="Daam Logo" width="50" height="50">
+          </a>
+        </div>
+        <div>
+          <!-- Mobile Title -->
+          <h1 class="fw-bold mb-0 text-dark text-nowrap d-block d-md-none"
+            style="font-size: 1rem; letter-spacing: -0.01em;">
+            Adjust <span class="text-primary">Post Body</span> Inspector
+          </h1>
+          <!-- Tablet/Desktop Title -->
+          <h1 class="fw-bold mb-0 text-dark text-nowrap d-none d-md-block">
+            Adjust <span class="text-primary">Post Body</span> Inspector
+          </h1>
+          <div class="d-flex align-items-center gap-2">
+            <small class="text-muted text-uppercase fw-bold ls-1 d-none d-sm-block"
+              style="font-size: 0.65rem;">Marketing Tech Diagnostic Tool</small>
+            <span class="badge bg-secondary-subtle text-secondary border-0 x-small">v{{version()}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="d-flex gap-3 align-items-center justify-content-between justify-content-md-end ms-md-auto">
+      <button class="btn btn-sm btn-outline-primary fw-bold px-3" (click)="openDictionary.emit()">
+        <i class="bi bi-book-half me-1"></i> Dictionary
+      </button>
+
+      <button class="btn btn-link nav-link p-0 border-0 shadow-none text-dark" (click)="themeService.toggleTheme()">
+        @if (themeService.isDarkMode()) {
+        <i class="bi bi-sun-fill text-warning fs-5"></i>
+        } @else {
+        <i class="bi bi-moon-stars-fill fs-5"></i>
+        }
+      </button>
+
+      <a href="https://github.com/rolandjethro/Adjust-Post-Body-Validator" target="_blank"
+        class="btn btn-link nav-link p-0 border-0 shadow-none text-dark">
+        <i class="bi bi-github fs-5"></i>
+      </a>
+    </div>
+  </div>
+</nav>

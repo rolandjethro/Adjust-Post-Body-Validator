@@ -16,30 +16,51 @@
         @for (entry of history(); track entry.id) {
         <div class="card border-secondary-subtle shadow-sm animate__animated animate__fadeInUp">
             <div class="card-header bg-body-tertiary d-flex justify-content-between align-items-center py-2">
-                <div class="d-flex align-items-center">
-                    <span [class]="'badge me-2 bg-' + entry.status.type">
-                        {{ entry.status.isValid ? 'MATCHED' : 'MISMATCH' }}
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge" [class.bg-success]="entry.status.isValid"
+                        [class.bg-danger]="!entry.status.isValid">
+                        {{ entry.status.isValid ? 'PASSED' : 'FAILED' }}
                     </span>
-                    <small class="fw-bold">{{ entry.eventName }}</small>
-                    <small class="text-muted ms-2 border-start ps-2">{{ entry.timestamp | date:'shortTime' }}</small>
-                </div>
-                <button class="btn btn-sm border-0 transition-all" [class.text-success]="copiedId() === entry.id"
-                    [class.text-primary]="copiedId() !== entry.id" (click)="copyToClipboard(entry)" title="Copy JSON">
-                
-                    @if (copiedId() === entry.id) {
-                    <i class="bi bi-check-lg animate__animated animate__bounceIn"></i>
-                    <small class="ms-1 fw-bold">Copied!</small>
-                    } @else {
-                    <i class="bi bi-clipboard"></i>
+                    @if (!entry.status.isValid) {
+                    <small class="text-danger fw-bold">
+                        <i class="bi bi-exclamation-circle-fill me-1"></i>
+                        {{ getErrorCount(entry) }} Compliance did not meet
+                    </small>
                     }
-                </button>
+                    <small class="fw-bold text-dark ms-1">{{ entry.eventName }}</small>
+                    <small class="text-muted ms-2 border-start ps-2 d-none d-sm-inline">{{ entry.timestamp | date:'shortTime' }}</small>
+                </div>
             </div>
 
-            <div class="card-body p-0" [class.bg-danger-subtle]="!entry.status.isValid">
-                <pre class="m-0 p-3 x-small overflow-auto" [style.color]="entry.status.isValid ? '#2ecc71' : '#e74c3c'"
-                    style="max-height: 150px;">
-                    <code>{{ entry.parsedData | json }}</code>
-                </pre>
+            <div class="card-body p-0 border-top" [class.bg-danger-subtle]="!entry.status.isValid">
+                <div class="row g-0">
+                    <!-- Raw Postbody -->
+                    <div class="col-md-6 border-end border-secondary-subtle">
+                        <div class="px-3 py-2 bg-body-secondary d-flex justify-content-between align-items-center border-bottom border-secondary-subtle">
+                            <small class="fw-bold text-muted x-small ls-1">PASTED POSTBODY</small>
+                            <button class="btn btn-link btn-sm p-0 text-decoration-none fw-bold x-small" 
+                                    [class.text-success]="copiedId() === entry.id + '_raw'"
+                                    (click)="copyRaw(entry)">
+                                {{ copiedId() === entry.id + '_raw' ? 'COPIED!' : 'COPY RAW' }}
+                            </button>
+                        </div>
+                        <pre class="m-0 p-3 x-small overflow-auto" style="max-height: 200px; white-space: pre-wrap; word-break: break-all; color: #6c757d;"><code>{{ entry.rawInput }}</code></pre>
+                    </div>
+
+                    <!-- JSON Formatted -->
+                    <div class="col-md-6">
+                        <div class="px-3 py-2 bg-body-secondary d-flex justify-content-between align-items-center border-bottom border-secondary-subtle">
+                            <small class="fw-bold text-muted x-small ls-1">JSON FORMATTED</small>
+                            <button class="btn btn-link btn-sm p-0 text-decoration-none fw-bold x-small" 
+                                    [class.text-success]="copiedId() === entry.id"
+                                    (click)="copyToClipboard(entry)">
+                                {{ copiedId() === entry.id ? 'COPIED!' : 'COPY JSON' }}
+                            </button>
+                        </div>
+                        <pre class="m-0 p-3 x-small overflow-auto" [style.color]="entry.status.isValid ? '#2ecc71' : '#e74c3c'"
+                            style="max-height: 200px;"><code>{{ entry.parsedData | json }}</code></pre>
+                    </div>
+                </div>
             </div>
         </div>
         } @empty {

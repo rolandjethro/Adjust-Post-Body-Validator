@@ -870,8 +870,8 @@ function getDeviceId(eventData) {
 function getEncodedUserAgent(eventData) {
   if (!eventData) return '';
 
-  const platform = eventData['x-ga-platform'] || 'Android';
-  const osVersion = eventData['x-ga-os_version'] || '';
+  const platform = eventData['x-ga-platform'];
+  const osVersion = eventData['x-ga-os_version'] ;
   const deviceModel = eventData['x-ga-device_model'] || '';
   const appVersion = eventData.app_version || '';
 

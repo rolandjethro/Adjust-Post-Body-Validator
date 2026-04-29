@@ -9,7 +9,7 @@ import { NgbActiveModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
   templateUrl: './event-dictionary.html',
 })
 export class EventDictionary {
-  private eventService = inject(EventMappingService);
+  public eventService = inject(EventMappingService);
   activeModal = inject(NgbActiveModal);
 
   allEvents = this.eventService.eventList;
@@ -66,5 +66,19 @@ export class EventDictionary {
     this.isConfirmingClear.set(false);
     this.successMessage.set('Dictionary cleared');
     setTimeout(() => this.successMessage.set(null), 2000);
+  }
+
+  toggleRevenueStatus(name: string, event: Event) {
+    const isChecked = (event.target as HTMLInputElement).checked;
+    this.eventService.toggleRevenue(name, isChecked);
+  }
+
+  dismissModal() {
+    if (!this.eventService.appToken()) {
+      this.errorMessage.set('Warning: Adjust App Token is empty. This is required for payload validation.');
+      const confirmClose = window.confirm('Adjust App Token is missing. Validation will fail without it. Close anyway?');
+      if (!confirmClose) return;
+    }
+    this.activeModal.close();
   }
 }
