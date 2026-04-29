@@ -37,8 +37,7 @@ The application is structured into four primary functional areas:
 
 ### 4. Global Tools & Branding
 
-- **Navbar**: Access the **Event Dictionary**, **Theme Toggle**, and **GitHub Repo**. The logo links directly to [Daam.com.sa](https://daam.com.sa).
-- **Footer**: Branding and direct links to the Daam team's professional services.
+- **Navbar**: Access the **Event Dictionary**, **Theme Toggle**, and **GitHub Repo**. The logo links directly to [daam.com.sa](https://daam.com.sa).
 
 ---
 
