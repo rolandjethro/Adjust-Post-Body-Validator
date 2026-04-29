@@ -1,101 +1,101 @@
-# Adjust Post Body Inspector (v1.1.0)
+# Adjust Post Body Inspector (v1.2.0)
 
-A specialized **Marketing Tech Diagnostic Tool** designed to validate and inspect Adjust S2S (Server-to-Server) post bodies. This tool ensures that your event data meets Adjust's strict compliance standards before you send it to their production environment.
+A specialized **Marketing Tech Diagnostic Tool** designed by [Daam Team](https://daam.com.sa) to validate and inspect Adjust S2S (Server-to-Server) post bodies. This tool ensures that your event data meets Adjust's strict compliance standards before you send it to their production environment.
 
 ---
 
 ## 🖼 Visual Preview
 
-## 🔗 Live Deployment
-
-**Access the live tool here:** [https://daam.com.sa/adjust-postbody-inspector/](https://daam.com.sa/adjust-postbody-inspector/)
-
 ![Adjust Post Body Inspector Interface](./public/assets/images/preview.png)
 
 ## 🔗 Live Deployment
-**Access the live tool here:** [https://daam.com.sa/adjust-postbody-inspector/](https://daam.com.sa/adjust-postbody-inspector/)
 
-## 🗺 Navigation
+**Access the live tool here:** [https://daam.com.sa/tools/adjust-s2s-events-api-inspector/](https://daam.com.sa/tools/adjust-s2s-events-api-inspector/)
 
-The application is structured into three primary functional areas:
+## Navigation
+
+The application is structured into four primary functional areas:
 
 ### 1. Input Panel (Left)
 
 - **Textarea**: Paste your raw Adjust query string here.
 - **Process & Validate**: Triggers the parsing and compliance check logic.
-- **Reset (Icon)**: Clears all current inputs and results to start fresh.
+- **Reset (Icon)**: A high-contrast red button to clear all current inputs and results.
 
 ### 2. Inspector Results (Right)
 
 - **Dictionary Required State**: A safety screen shown when no event mappings are loaded.
 - **Empty State**: Prompting the user to paste a string once the dictionary is ready.
-- **Error/Warning View**: Displays syntax errors or "Incomplete JSON" alerts if the string is truncated.
-- **Results View**: The main dashboard showing the Event Token, Mapping Status, Compliance Alert, and the formatted JSON tree.
+- **Compliance Alerts**: Instant feedback on App Token matching, required parameters, and device IDs.
+- **Results View**: Displays the Event Token, Mapping Status, and the formatted JSON tree.
 
-### 3. Global Tools
+### 3. History Section (Bottom)
 
-- **Navbar**: Access the **Event Dictionary** modal and the **Theme Toggle** (Light/Dark mode).
-- **History Section**: Found at the bottom of the page to track all validated events in the current session.
+- **Dual-View Inspection**: Review both the **Raw Postbody** and the **JSON Formatted** data for your last 15 tests.
+- **Error Counting**: See exactly how many compliance issues were found for each failed attempt.
+- **Independent Copying**: Separate controls to copy raw strings or JSON results back to your clipboard.
+
+### 4. Global Tools & Branding
+
+- **Navbar**: Access the **Event Dictionary**, **Theme Toggle**, and **GitHub Repo**. The logo links directly to [Daam.com.sa](https://daam.com.sa).
+- **Footer**: Branding and direct links to the Daam team's professional services.
 
 ---
 
-## 🛠 Tools & Technologies Used
+## Tools & Technologies Used
 
 This application is built with a modern web stack for high performance and real-time reactivity:
 
 - **Angular (v17+)**: Core framework utilizing **Signals** for state management.
-  - **Computed Signals**: Used for real-time tracking of the dictionary status.
-  - **Effects**: Automatically clears the workspace when the dictionary list is modified.
-- **Bootstrap 5**: Responsive layout and UI components (cards, badges, alerts).
-- **Bootstrap Icons**: Intuitive visual status indicators.
+- **Bootstrap 5.3**: Responsive layout and UI components with customized branding.
+- **Bootstrap Icons**: Intuitive visual status indicators for compliance checks.
 - **NgbModal**: Powers the CSV upload and dictionary management interface.
-- **Animate.css**: Smooth transitions for error states and result displays.
+- **Animate.css**: Smooth transitions for alerts and history entries.
 - **TypeScript**: Ensures strict type safety for validation logic.
 
 ---
 
-## 🚀 Key Features
+## Key Features (v1.2.0)
 
-- **Real-time Dictionary Validation**: Instantly checks if an `event_token` exists in your uploaded CSV.
-- **Smart Platform Detection**: Identifies **Android** or **iOS** based on the User Agent string.
-- **Compliance Guardrails**:
-  - **Android**: Checks for `gps_adid` and flags illegal iOS IDs (`idfa`/`idfv`).
-  - **iOS**: Ensures `idfv` is present.
-  - **Revenue**: Enforces root-level `revenue` and `currency` for purchase-intent events.
-- **Truncation Detection**: Specifically identifies incomplete strings (e.g., ending in `%7`) that break JSON structure.
-- **ADID Quick-Copy**: A one-click button to copy the Adjust Device ID for troubleshooting.
+- **App Token Guard**: Strict validation against a user-defined Adjust App Token to prevent cross-app testing errors.
+- **Intelligent Dictionary Mapping**: Automatically maps event tokens to human-readable names via CSV upload.
+- **Smart Platform Detection**: Identifies **Android** or **iOS** based on the User Agent string and enforces platform-specific rules (e.g., `gps_adid` vs `idfv`).
+- **Revenue Enforcement**: Checks root-level `revenue` and `currency` for purchase events.
+- **Compliance Counter**: Clearly labels the number of failures (e.g., "2 Compliance issues found") in your history logs.
+- **ADID & JSON Quick-Copy**: Easy access to the data you need for further troubleshooting.
 
 ---
 
-## 📖 How to Use
+## How to Use
 
-### 1. Set Up Your Dictionary
+### 1. Set Up Your Dictionary (Mandatory)
 
-The app needs a reference list to validate tokens.
-
-1.  Click **"Dictionary"** in the top bar.
-2.  Upload your event mapping CSV file.
-3.  The "Inspector Results" will now unlock.
-    _Note: If you update or clear this list, the app will automatically empty your textarea to prevent data mismatch._
+1.  Click **"Dictionary"** in the navbar.
+2.  **Adjust App Token**: Enter your specific app token. This is required for full validation.
+3.  **Upload CSV**: Upload your event mapping file.
+4.  The "Inspector Results" will now unlock.
 
 ### 2. Paste & Process
 
-1.  Copy your raw Adjust post body string.
+1.  Copy your raw Adjust post body string from your server logs or sGTM preview.
 2.  Paste it into the **Raw Query String** box.
 3.  Click **Process & Validate**.
 
 ### 3. Review Results
 
-1.  **Check the Token**: Look at the header. A **Green "Mapped" badge** means the token is correct per your dictionary.
-2.  **Read the Compliance Alert**:
-    - ✅ **Success (Green)**: The payload is ready for Adjust S2S.
-    - ❌ **Failed (Red)**: Read the specific error message (e.g., "Missing gps_adid").
-3.  **Inspect JSON**: Use the code view at the bottom to see exactly how Adjust sees your data.
+1.  **Check Status**: Look for the **PASSED** (Green) or **FAILED** (Red) badge.
+2.  **Analyze Errors**: If it failed, read the specific messages (e.g., "App Token mismatch" or "Missing event_token").
+3.  **Inspect History**: Scroll down to compare your current test with previous attempts using the dual-view cards.
 
 ---
 
-## ⚠️ Common Validation Alerts
+## Common Validation Alerts
 
-- **Dictionary Error**: The token provided is not in your uploaded CSV.
-- **Environment Error**: The string contains an invalid environment (expected `production` or `staging`).
-- **Incomplete JSON**: The string was likely cut off during copy-pasting (truncated).
+- **App Token Mismatch**: The token in the payload does not match the one set in your dictionary.
+- **Dictionary Error**: The event token provided is not in your uploaded CSV.
+- **Environment Error**: The string contains an invalid environment (expected `production` or `sandbox`).
+- **Device Identifier Warning**: No valid ID (`adid`, `gps_adid`, `idfa`, `idfv`) was found.
+
+---
+
+Created by [Daam Team](https://daam.com.sa).
