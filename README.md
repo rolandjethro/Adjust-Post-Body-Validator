@@ -4,7 +4,7 @@ A specialized **Marketing Tech Diagnostic Tool** designed by [Daam Team](https:/
 
 ---
 
-## 🖼 Visual Preview
+## Visual Preview
 
 ![Adjust Post Body Inspector Interface](./public/assets/images/preview.png)
 
@@ -72,7 +72,7 @@ This application is built with a modern web stack for high performance and real-
 
 1.  Click **"Dictionary"** in the navbar.
 2.  **Adjust App Token**: Enter your specific app token. This is required for full validation.
-3.  **Upload CSV**: Upload your event mapping file.
+3.  **Upload CSV**: Download the event's .csv file from your Adjust App account ( Example: https://suite.adjust.com/apps/<app_token>/events ). Upload that .csv file for event mapping.  
 4.  The "Inspector Results" will now unlock.
 
 ### 2. Paste & Process
