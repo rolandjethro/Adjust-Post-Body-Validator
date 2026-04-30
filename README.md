@@ -1,4 +1,4 @@
-# Adjust Post Body Inspector (v1.2.0)
+# Adjust Post Body Inspector (v1.3.0)
 
 A specialized **Marketing Tech Diagnostic Tool** designed by [Daam Team](https://daam.com.sa) to validate and inspect Adjust S2S (Server-to-Server) post bodies. This tool ensures that your event data meets Adjust's strict compliance standards before you send it to their production environment.
 
