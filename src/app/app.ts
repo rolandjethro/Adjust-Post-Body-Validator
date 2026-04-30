@@ -39,7 +39,7 @@ export class App {
   currentYear = new Date().getFullYear();
 
   hasDictionary = computed(() => this.eventService.eventList().length > 0);
-  version = signal('1.2.0');
+  version = signal('1.3.0');
 
   constructor() {
     this.titleService.setTitle("Daam - Adjust Query Inspector");

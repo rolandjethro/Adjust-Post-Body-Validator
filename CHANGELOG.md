@@ -2,6 +2,21 @@
 
 All notable changes to the Adjust Post Body Inspector will be documented in this file.
 
+## [1.3.0] - 2026-04-30
+
+### Added
+
+- **Intelligent Platform Detection**: The validation engine now automatically detects the device platform (`Android` or `iOS`) by analyzing the `user_agent` string.
+- **Platform-Specific Compliance**:
+    - **Android Validation**: Added a targeted warning alert when the `gps_adid` is missing for detected Android devices.
+    - **iOS Validation**: Added a targeted warning alert when both `idfa` and `idfv` are missing for detected iOS devices.
+- **Advertising ID Recommendation**: Implemented a proactive warning for missing `adid` (Adjust Device ID) to ensure better attribution reliability.
+- **Smart Undetected Platform Logic**: Refined detection logic to only trigger "Undetected Platform" warnings when both the platform and all primary advertising IDs are missing, preventing redundant alerts for partial payloads.
+
+### Improved
+
+- **Validation Message Clarity**: Standardized alert messages for device identifier compliance to be more concise and actionable.
+
 ## [1.2.0] - 2026-04-29
 
 ### Added
