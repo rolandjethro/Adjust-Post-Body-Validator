@@ -10,7 +10,7 @@ A specialized **Marketing Tech Diagnostic Tool** designed by [Daam Team](https:/
 
 ## 🔗 Live Deployment
 
-**Access the live tool here:** [https://daam.com.sa/tools/adjust-s2s-events-inspector/](https://daam.com.sa/tools/adjust-s2s-events-inspector/)
+**Access the live tool here:** [https://daam.com.sa/adjust-s2s-events-inspector/](https://daam.com.sa/adjust-s2s-events-inspector/)
 
 ## Navigation
 
