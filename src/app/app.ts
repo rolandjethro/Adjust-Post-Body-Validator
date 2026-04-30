@@ -100,14 +100,14 @@ export class App {
       // 0. APP TOKEN VALIDATION (TOP PRIORITY)
       const expectedAppToken = this.eventService.appToken().trim();
       if (!expectedAppToken) {
-        alerts.push({ 
-          type: 'danger', 
-          message: `Dictionary Error: Adjust App Token is missing in your dictionary. Please set it in the Dictionary modal to validate payload compliance.` 
+        alerts.push({
+          type: 'danger',
+          message: `Dictionary Error: Adjust App Token is missing in your dictionary. Please set it in the Dictionary modal to validate payload compliance.`
         });
       } else if (result.app_token && result.app_token !== expectedAppToken) {
-        alerts.push({ 
-          type: 'danger', 
-          message: `Compliance Failed: App Token mismatch. Expected '${expectedAppToken}' but found '${result.app_token}'.` 
+        alerts.push({
+          type: 'danger',
+          message: `Compliance Failed: App Token mismatch. Expected '${expectedAppToken}' but found '${result.app_token}'.`
         });
       }
 
@@ -135,10 +135,68 @@ export class App {
       }
 
       // 3. DEVICE IDENTIFIER PARAMETERS
+      const adid = result.adid;
+      const gps_adid = result.gps_adid;
+      const idfa = result.idfa;
+      const idfv = result.idfv;
+
       const identifiers = ['adid', 'gps_adid', 'idfa', 'idfv'];
-      const hasIdentifier = identifiers.some(key => !!result[key]);
-      if (!hasIdentifier) {
-        alerts.push({ type: 'danger', message: `Missing Device Identifier. At least one of adid, gps_adid, idfa, or idfv is required.` });
+      const hasAnyIdentifier = identifiers.some(key => !!result[key]);
+
+      let detectedPlatform = null;
+      const uaLower = ua.toLowerCase();
+      if (uaLower.includes('android')) {
+        detectedPlatform = 'android';
+      } else if (
+        uaLower.includes('iphone') ||
+        uaLower.includes('ipad') ||
+        uaLower.includes('ipod') ||
+        uaLower.includes('ios')
+      ) {
+        detectedPlatform = 'ios';
+      }
+
+      // Android specific
+      if (detectedPlatform === 'android') {
+        if (!gps_adid) {
+          alerts.push({
+            type: 'warning',
+            message: `Android device detected but gps_adid is missing.`,
+          });
+        }
+      }
+      // iOS specific
+      else if (detectedPlatform === 'ios') {
+        if (!idfa && !idfv) {
+          alerts.push({
+            type: 'warning',
+            message: `iOS device detected but ( idfv or idfa )is missing.`,
+          });
+        }
+      }
+      // Platform undetected
+      else {
+        if (!gps_adid && !idfa && !idfv) {
+          alerts.push({
+            type: 'warning',
+            message: `Undetected platform and no advertising ID provided. Add user_agent and an advertising ID for better result.`,
+          });
+        }
+      }
+      // ADID check
+      if (!adid) {
+        alerts.push({
+          type: 'warning',
+          message: `adid is missing and it is recommended to have it for better result.`,
+        });
+      }
+
+      // Global fallback (already existed, kept for compliance)
+      if (!hasAnyIdentifier) {
+        alerts.push({
+          type: 'danger',
+          message: `Missing Device Identifier. At least one of adid, gps_adid, idfa, or idfv is required.`,
+        });
       }
 
       // 4. RECOMMENDED PARAMETERS
@@ -208,9 +266,9 @@ export class App {
 
       this.validationResult.set(finalValidation);
       this.historyService.addEntry(
-        this.matchedEventName() || 'Unknown Event', 
-        result.event_token || 'N/A', 
-        finalValidation, 
+        this.matchedEventName() || 'Unknown Event',
+        result.event_token || 'N/A',
+        finalValidation,
         result,
         this.rawInput()
       );

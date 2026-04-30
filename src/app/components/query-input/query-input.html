@@ -7,14 +7,11 @@
       class="form-control font-monospace mb-3 bg-body-tertiary border-0 shadow-inner"
       style="height: 60vh; font-size: 0.85rem; resize: none;" [ngModel]="rawInput()"
       (ngModelChange)="onInputChanged($event)"
-      [placeholder]="hasDictionary() ? 'Paste your app_token=... string here' : 'Upload Event List on dictionary to enable processing'"></textarea>
+      [placeholder]="hasDictionary() ? 'Paste your post body here' : 'Upload Event List on dictionary to enable processing'"></textarea>
 
     <div class="d-flex gap-2">
-      <button type="button" 
-              class="btn border-0 px-3 shadow-sm d-flex align-items-center justify-content-center" 
-              style="background-color: #fee2e2; color: #ef4444;"
-              (click)="clearAll.emit()" 
-              title="Reset All Fields">
+      <button type="button" class="btn border-0 px-3 shadow-sm d-flex align-items-center justify-content-center"
+        style="background-color: #fee2e2; color: #ef4444;" (click)="clearAll.emit()" title="Reset All Fields">
         <i class="bi bi-arrow-counterclockwise fs-5" style="-webkit-text-stroke: 1px;"></i>
       </button>
       <button type="button" class="btn btn-primary flex-grow-1 py-3 fw-bold shadow-sm" (click)="process.emit()"
