@@ -42,7 +42,7 @@ export class App {
   version = signal('1.3.0');
 
   constructor() {
-    this.titleService.setTitle("Daam - Adjust Query Inspector");
+    this.titleService.setTitle("Daam | Adjust S2S Events Inspector");
 
     effect(() => {
       const list = this.eventService.eventList();

@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to the Adjust Post Body Inspector will be documented in this file.
+All notable changes to the Adjust S2S Events Inspector will be documented in this file.
 
 ## [1.3.0] - 2026-04-30
 

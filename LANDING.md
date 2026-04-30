@@ -1,4 +1,4 @@
-#  Adjust Post Body Inspector Landing Page Content
+# Adjust S2S Events Inspector Landing Page Content
 
 ## 1. Hero Section
 **Daam Context:** Elevate your Marketing Tech stack with Daam’s specialized precision diagnostics for Adjust S2S implementations.
@@ -57,7 +57,7 @@ Debugging your Adjust events is as easy as 1-2-3:
 ## 6. Conclusion & Resources
 Ready to streamline your Adjust implementation? Start inspecting now or contribute to the project on GitHub.
 
-*   **[Launch Adjust S2S Inspector](https://daam.com.sa/tools/adjust-s2s-events-api-inspector/)**
+*   **[Launch Adjust S2S Events Inspector](https://daam.com.sa/tools/adjust-s2s-events-api-inspector/)**
 *   **[View on GitHub](https://github.com/rolandjethro/Adjust-Post-Body-Inspector)**
 
 ---
